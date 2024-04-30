@@ -6,19 +6,28 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JTextField;
+
+import pruebaCCAA.entities.ComunidadAutonoma;
+
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PanelCCAA extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private JTextField textField_1;
+	JComboBox<ComunidadAutonoma> jcbCcaa;
+	ComunidadAutonoma ccaa;
 
 	/**
 	 * Create the panel.
 	 */
-	public PanelCCAA() {
+	public PanelCCAA(ComunidadAutonoma ccaa, JComboBox<ComunidadAutonoma> jcbCcaa) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
@@ -71,6 +80,10 @@ public class PanelCCAA extends JPanel {
 		textField_1.setColumns(10);
 		
 		JButton btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnGuardar.setFont(new Font("Dialog", Font.BOLD, 14));
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
 		gbc_btnGuardar.gridwidth = 2;

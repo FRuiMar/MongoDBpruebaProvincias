@@ -2,7 +2,7 @@ package pruebaCCAA.entities;
 
 public class ComunidadAutonoma {
 
-	String _id;
+	String id;
 	String parent_code;
 	String code;
 	String label;
@@ -14,12 +14,12 @@ public class ComunidadAutonoma {
 	
 	
 	
-	public String get_Id() {
-		return _id;
+	public String getId() {
+		return id;
 	}
 
-	public void set_Id(String _id) {
-		this._id = _id;
+	public void set_Id(String id) {
+		this.id = id;
 	}
 
 	public String getParent_code() {

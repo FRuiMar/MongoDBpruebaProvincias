@@ -19,18 +19,18 @@ public class DatosDeTabla {
 				"Parent_code", "CCAA"};
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static List<Provincia> getTodasProvincias () {
-		if (provincias == null) {
-			provincias = (List<Provincia>) ControladorProvinciasMongo
-					.getInstance().getAllProvincia(null)
-		}
-		return provincias;
-
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public static List<Provincia> getTodasProvincias () {
+//		if (provincias == null) {
+//			provincias = (List<Provincia>) ControladorProvinciasMongo
+//					.getInstance().getAllProvincias(null);
+//		}
+//		return provincias;
+//
+//	}
 	
 	/**
 	 * 
@@ -38,7 +38,7 @@ public class DatosDeTabla {
 	 */
 	public static Object[][] getDatosDeTabla() {
 		// Obtengo todas las personas
-		List<Provincia> provincias = get();
+		List<Provincia> provincias = ControladorProvinciasMongo.getInstance().getAllProvincias(null);
 		// Preparo una estructura para pasar al constructor de la JTable
 		Object[][] datos = new Object[contratos.size()][7];
 		// Cargo los datos de la lista de personas en la matriz de los datos

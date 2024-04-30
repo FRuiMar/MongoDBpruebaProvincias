@@ -35,7 +35,7 @@ public class ControladorProvinciasMongo extends SuperControladorMongoDb {
 	//REVISAR ESTA
     // Obtener todos los documentos de una colección.
     // y los metemos en una lista.  La colección sale del método anterior.
-    public List<Provincia> getAllProvincia(MongoCollection<Document> col) {
+    public List<Provincia> getAllProvincias(MongoCollection<Document> col) {
         System.out.println("Obteniendo todas las ccaa de la colección");
  
         // Performing a read operation on the collection.

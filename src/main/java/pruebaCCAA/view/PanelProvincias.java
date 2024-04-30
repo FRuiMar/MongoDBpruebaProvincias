@@ -5,17 +5,27 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
+
+import pruebaCCAA.entities.ComunidadAutonoma;
+
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PanelProvincias extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField jtfCode;
 	private JTextField jtfLabel;
-
+	private JComboBox jcbCCAA;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -81,7 +91,7 @@ public class PanelProvincias extends JPanel {
 		gbc_lblNewLabel_2.gridy = 5;
 		add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
-		JComboBox jcbCCAA = new JComboBox();
+		jcbCCAA = new JComboBox<ComunidadAutonoma>();
 		GridBagConstraints gbc_jcbCCAA = new GridBagConstraints();
 		gbc_jcbCCAA.insets = new Insets(0, 0, 5, 5);
 		gbc_jcbCCAA.fill = GridBagConstraints.HORIZONTAL;
@@ -90,6 +100,11 @@ public class PanelProvincias extends JPanel {
 		add(jcbCCAA, gbc_jcbCCAA);
 		
 		JButton jbtVerCCAA = new JButton("Ver Comunidad");
+		jbtVerCCAA.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrarPanelProvinciasEnJDialog();
+			}
+		});
 		jbtVerCCAA.setFont(new Font("Dialog", Font.BOLD, 14));
 		GridBagConstraints gbc_jbtVerCCAA = new GridBagConstraints();
 		gbc_jbtVerCCAA.insets = new Insets(0, 0, 5, 5);
@@ -98,6 +113,11 @@ public class PanelProvincias extends JPanel {
 		add(jbtVerCCAA, gbc_jbtVerCCAA);
 		
 		JButton jbtGuardar = new JButton("Guardar");
+		jbtGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		jbtGuardar.setFont(new Font("Dialog", Font.BOLD, 14));
 		GridBagConstraints gbc_jbtGuardar = new GridBagConstraints();
 		gbc_jbtGuardar.gridwidth = 3;
@@ -108,4 +128,21 @@ public class PanelProvincias extends JPanel {
 
 	}
 
+	/**
+	 * 
+	 */
+	private void mostrarPanelProvinciasEnJDialog () {
+		JDialog dialogo = new JDialog();
+		dialogo.setResizable(true);
+		dialogo.setTitle("Gestión de usuario");
+		dialogo.setContentPane(new PanelCCAA(
+				(ComunidadAutonoma) this.jcbCCAA.getSelectedItem(), this.jcbCCAA));
+		dialogo.pack();
+		dialogo.setModal(true);
+		dialogo.setLocation(
+				(Toolkit.getDefaultToolkit().getScreenSize().width)/2 - dialogo.getWidth()/2, 
+				(Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialogo.getHeight()/2);
+		dialogo.setVisible(true);
+	}
+	
 }
