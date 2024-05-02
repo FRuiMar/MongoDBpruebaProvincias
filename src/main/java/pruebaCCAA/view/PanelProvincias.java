@@ -3,6 +3,8 @@ package pruebaCCAA.view;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -10,13 +12,17 @@ import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import pruebaCCAA.controllers.ControladorComunidadMongo;
+import pruebaCCAA.controllers.ControladorProvinciasMongo;
 import pruebaCCAA.entities.ComunidadAutonoma;
+import pruebaCCAA.entities.Provincia;
 
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class PanelProvincias extends JPanel {
@@ -24,7 +30,12 @@ public class PanelProvincias extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField jtfCode;
 	private JTextField jtfLabel;
-	private JComboBox jcbCCAA;
+	private JComboBox jcbCcaa;
+	private PanelTabla panelTabla;
+	
+	public PanelTabla setPanelTabla(PanelTabla panelTabla) {
+		return this.panelTabla = panelTabla;
+	}
 	
 	/**
 	 * Create the panel.
@@ -91,13 +102,13 @@ public class PanelProvincias extends JPanel {
 		gbc_lblNewLabel_2.gridy = 5;
 		add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
-		jcbCCAA = new JComboBox<ComunidadAutonoma>();
-		GridBagConstraints gbc_jcbCCAA = new GridBagConstraints();
-		gbc_jcbCCAA.insets = new Insets(0, 0, 5, 5);
-		gbc_jcbCCAA.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jcbCCAA.gridx = 1;
-		gbc_jcbCCAA.gridy = 5;
-		add(jcbCCAA, gbc_jcbCCAA);
+		jcbCcaa = new JComboBox<ComunidadAutonoma>();
+		GridBagConstraints gbc_jcbCcaa = new GridBagConstraints();
+		gbc_jcbCcaa.insets = new Insets(0, 0, 5, 5);
+		gbc_jcbCcaa.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbCcaa.gridx = 1;
+		gbc_jcbCcaa.gridy = 5;
+		add(jcbCcaa, gbc_jcbCcaa);
 		
 		JButton jbtVerCCAA = new JButton("Ver Comunidad");
 		jbtVerCCAA.addActionListener(new ActionListener() {
@@ -115,7 +126,13 @@ public class PanelProvincias extends JPanel {
 		JButton jbtGuardar = new JButton("Guardar");
 		jbtGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					guardar();
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, 
+							"No se ha realizado la actualización");
+					ex.printStackTrace();
+				}
 			}
 		});
 		jbtGuardar.setFont(new Font("Dialog", Font.BOLD, 14));
@@ -126,8 +143,15 @@ public class PanelProvincias extends JPanel {
 		gbc_jbtGuardar.gridy = 7;
 		add(jbtGuardar, gbc_jbtGuardar);
 
+		
+		
+		//cargaTodasCCAA();
 	}
 
+	
+	
+	
+	
 	/**
 	 * 
 	 */
@@ -136,7 +160,7 @@ public class PanelProvincias extends JPanel {
 		dialogo.setResizable(true);
 		dialogo.setTitle("Gestión de usuario");
 		dialogo.setContentPane(new PanelCCAA(
-				(ComunidadAutonoma) this.jcbCCAA.getSelectedItem(), this.jcbCCAA));
+				(ComunidadAutonoma) this.jcbCcaa.getSelectedItem(), this.jcbCcaa));
 		dialogo.pack();
 		dialogo.setModal(true);
 		dialogo.setLocation(
@@ -144,5 +168,88 @@ public class PanelProvincias extends JPanel {
 				(Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialogo.getHeight()/2);
 		dialogo.setVisible(true);
 	}
+
+	
+	
+	public void muestraProvincia(Provincia ps) {
+		
+		if(ps != null)
+			this.jtfLabel.setText("" + ps.getLabel());
+			this.jtfCode.setText(ps.getCode());
+		
+			for (int i = 0; i < this.jcbCcaa.getItemCount(); i++) {
+				if (((ComunidadAutonoma) this.jcbCcaa.getItemAt(i)).getCode()
+						.equals(ps.getParentCode())) {
+					this.jcbCcaa.setSelectedIndex(i);
+				}
+			}
+	}
+		
+
+		
+	
+	
+	/**
+	 * 
+	 */
+	private void cargaTodasCCAA() {
+		List<ComunidadAutonoma> ccaas = (List<ComunidadAutonoma>) ControladorComunidadMongo
+				.getInstance().getAllCcaa();
+		for (ComunidadAutonoma ca : ccaas) {
+			this.jcbCcaa.addItem(ca);
+		}
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	public void guardar() {
+		Provincia p = new Provincia();
+		
+		// GUARDAMOS LOS DATOS QUE HAY EN EL PANEL PROVINCIA
+		// EN UN OBJETO PROVINCIA
+		
+		p.setCode(this.jtfCode.getText());
+		
+		if (!this.jtfLabel.getText().isEmpty()) {
+			p.setLabel(this.jtfLabel.getText());
+		}else {
+			JOptionPane.showMessageDialog(null,
+					"El nombre no puede estar vacío");;
+			return;
+		}
+		
+		p.setParentCode(((ComunidadAutonoma)this.jcbCcaa.getSelectedItem()).getCode());
+		
+		
+		
+		
+		
+		// GUARDAMOS EL DOCUMENTO (U OBJETO) EN LA COLECCIÓN
+		ControladorProvinciasMongo.getInstance()
+			.updateProvincia(p);
+		
+		
+		// Actualizamos la tabla para mostrar los nuevos datos.
+		// A continuación, seleccionamos en la tabla dicho registro.
+		this.panelTabla.updateTable();
+		this.panelTabla.selectRowByCode(this.jtfCode.getText());
+		
+		JOptionPane.showMessageDialog(null, 
+				"Se ha actualizado la provincia con éxito");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

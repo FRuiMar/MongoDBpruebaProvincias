@@ -1,48 +1,136 @@
 package pruebaCCAA.view;
 
+import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
+import pruebaCCAA.controllers.ControladorProvinciasMongo;
 import pruebaCCAA.entities.Provincia;
+
+
 
 public class PanelTabla extends JPanel {
 
-	PanelProvincias panelProvincia = null;
+	private static final long serialVersionUID = 1L;
+	private JTable table;
+	private DefaultTableModel dtm = null;
+	private Object datosTabla[][] = DatosDeTabla.getDatosDeTabla();
+	private String titulosTabla[] = DatosDeTabla.getTitulosColumnas();
+
+	private PanelProvincias panelProvincia;
+	
+	/**
+	 * Create the panel.
+	 */
+	public PanelTabla(PanelProvincias panelProvincia) {
+		setLayout(new BorderLayout(0, 0));
+		
+		this.panelProvincia = panelProvincia;
+		
+		// Inicializamos el DefaultTableModel.
+		this.dtm = getDefaultTableModel();
+		// Creo la tabla utilizando el DefaultTableModel.
+		this.table = new JTable(dtm);
+		// Limitamos el modo selección de filas a una única selección.
+		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		add(scrollPane, BorderLayout.CENTER);
+
+		this.table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				showSelectedRow();
+			}
+		});
+		
+		showFirstRow();
+		
+	}
+	
+	/**
+	 * Seleccionamos el registro según el code del elemento (Provincia).
+	 * @param code
+	 */
+	public void selectRowByCode(String code) {
+		for (int i = 0; i < this.dtm.getRowCount(); i++) {
+			String codeTable = (String) this.dtm.getValueAt(i, 0);
+			if (codeTable.equalsIgnoreCase(code)) {
+				this.table.setRowSelectionInterval(i, i);
+				showSelectedRow();
+			}
+		}
+	}
 	
 	/**
 	 * 
 	 */
-	public PanelTabla (PanelProvincias panelProvincia) {
-		this.panelProvincia = panelProvincia;
-		
-		//Creo un objeto JTable con el constructor m�s sencillo del que dispone
-		JTable table = new JTable(DatosDeTabla.getDatosDeTabla(), 
-				DatosDeTabla.getTitulosColumnas());
-		//Creamos un JscrollPane y le agregamos la JTable
-		JScrollPane scrollPane = new JScrollPane(table);
-		
-		// Accedo a los clics realizados sobre la tabla
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
-				int indiceFilaSel = table.getSelectedRow();
-				Provincia provinciaSel = DatosDeTabla.getTodosContratos()
-						.get(indiceFilaSel);
-				System.out.println("Contrato seleccionado: " + provinciaSel.getDescripcion());
-				panelProvincia.muestraProvincia(provinciaSel);
-			}
-		});
-		
-		//Agregamos el JScrollPane al contenedor
-		this.setLayout(new BorderLayout());
-		this.add(scrollPane, BorderLayout.CENTER);
+	private void showFirstRow() {
+		if (this.dtm.getRowCount() > 0) {
+			this.table.setRowSelectionInterval(0, 0);
+			// Mostramos los datos del registro.
+			showSelectedRow();
+		}
 	}
 	
+	/**
+	 * 
+	 */
+	public void updateTable() {
+		// Obtenemos los datos actualizados de la BBDD.
+		this.datosTabla = DatosDeTabla.getDatosDeTabla();
+		this.dtm.setDataVector(datosTabla, titulosTabla);
+		// Se notifican los posibles cambios de las celdas de la tabla.
+		this.dtm.fireTableDataChanged();
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	public void showSelectedRow() {
+		try {
+			int indexRow = table.getSelectedRow();
+			List<Provincia> provincias = ControladorProvinciasMongo
+					.getInstance().getAllProvincias();
+			Provincia p = provincias.get(indexRow);
+			this.panelProvincia.muestraProvincia(p);
+		} catch (Exception e) {
+			this.panelProvincia.muestraProvincia(null);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private DefaultTableModel getDefaultTableModel() {
+		DefaultTableModel dtm = 
+				new DefaultTableModel(datosTabla, titulosTabla) {
+			/**
+			 * La sobreescritura de este método nos permite controlar 
+			 * qué celdas queremos que sean editables
+			 */
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		return dtm;
+	}
+
 }

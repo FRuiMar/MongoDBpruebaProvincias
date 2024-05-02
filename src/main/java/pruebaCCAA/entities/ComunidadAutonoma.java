@@ -2,32 +2,32 @@ package pruebaCCAA.entities;
 
 public class ComunidadAutonoma {
 
-	String id;
-	String parent_code;
+//	String id; // No lo vamos a mostrar en este caso.
+	String parentCode;
 	String code;
 	String label;
+	
 	
 	public ComunidadAutonoma() {
 		super();
 	}
-
 	
 	
 	
-	public String getId() {
-		return id;
+//	public String getId() {
+//		return id;
+//	}
+//
+//	public void set_Id(String id) {
+//		this.id = id;
+//	}
+
+	public String getParentCode() {
+		return parentCode;
 	}
 
-	public void set_Id(String id) {
-		this.id = id;
-	}
-
-	public String getParent_code() {
-		return parent_code;
-	}
-
-	public void setParent_code(String parent_code) {
-		this.parent_code = parent_code;
+	public void setParentCode(String parentCode) {
+		this.parentCode = parentCode;
 	}
 
 	public String getCode() {
