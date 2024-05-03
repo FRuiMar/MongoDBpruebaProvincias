@@ -2,7 +2,7 @@ package pruebaCCAA.entities;
 
 public class Provincia {
 	
-//	String id;  // No lo vamos a mostrar en este caso.
+	String id;  
 	String parentCode;
 	String code;
 	String label;
@@ -15,14 +15,14 @@ public class Provincia {
 
 	
 	
-//	public String getId() {
-//		return id;
-//	}
-//
-//
-//	public void setId(String id) {
-//		this.id = id;
-//	}
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	
 

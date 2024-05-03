@@ -57,21 +57,23 @@ public class PanelTabla extends JPanel {
 	}
 	
 	/**
-	 * Seleccionamos el registro según el code del elemento (Provincia).
+	 * Adapto el byId para hacerlo por el code.
+	 * Seleccionamos la fila que tenga el code de la Provincia.
 	 * @param code
 	 */
-	public void selectRowByCode(String code) {
+	public void selectRowByCode(Provincia pr) {
 		for (int i = 0; i < this.dtm.getRowCount(); i++) {
-			String codeTable = (String) this.dtm.getValueAt(i, 0);
-			if (codeTable.equalsIgnoreCase(code)) {
+			String codeProvincia = (String) this.dtm.getValueAt(i, 0);
+			if (codeProvincia.equalsIgnoreCase(pr.getCode())) {
 				this.table.setRowSelectionInterval(i, i);
 				showSelectedRow();
 			}
 		}
 	}
 	
+	
 	/**
-	 * 
+	 * Seleccionamos la primera fila (esto lo usaremos por defecto)
 	 */
 	private void showFirstRow() {
 		if (this.dtm.getRowCount() > 0) {
@@ -81,8 +83,10 @@ public class PanelTabla extends JPanel {
 		}
 	}
 	
+	
+	
 	/**
-	 * 
+	 * copiado de Rafa. DefaultTableModel
 	 */
 	public void updateTable() {
 		// Obtenemos los datos actualizados de la BBDD.
@@ -115,7 +119,7 @@ public class PanelTabla extends JPanel {
 	
 	
 	/**
-	 * 
+	 * Copiado del ejemplo de Rafa.. revisar luego el resto.
 	 * @return
 	 */
 	private DefaultTableModel getDefaultTableModel() {

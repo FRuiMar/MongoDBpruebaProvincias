@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -127,6 +128,8 @@ public class ControladorProvinciasMongo{
      */
     private static Provincia documentToProvincia(Document doc) {
     	Provincia provincia = new Provincia();
+    	ObjectId objectId = doc.getObjectId("_id");  //el id de MongoDb es un ObjetId, no un string. Se puede ver en "Compass" la diferencia.
+    	    provincia.setId(objectId.toString());  // Convertir ObjectId a String
     	provincia.setParentCode(doc.getString("parent_code"));
     	provincia.setCode(doc.getString("code"));
     	provincia.setLabel(doc.getString("label"));

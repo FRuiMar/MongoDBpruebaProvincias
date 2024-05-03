@@ -99,6 +99,7 @@ public class ControladorComunidadMongo {
         MongoCursor<Document> cursor = fi.iterator();
 
         List<ComunidadAutonoma> allCcaa = new ArrayList<ComunidadAutonoma>();
+        
         try {
             while(cursor.hasNext()) {
             	allCcaa.add(documentToCcaa(cursor.next()));

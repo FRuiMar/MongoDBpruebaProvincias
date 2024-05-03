@@ -30,17 +30,21 @@ public class PanelProvincias extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField jtfCode;
 	private JTextField jtfLabel;
-	private JComboBox jcbCcaa;
-	private PanelTabla panelTabla;
+	public JComboBox<ComunidadAutonoma> jcbCcaa;  //le quito el private porque tengo que usarlo luego en el panelCCAA.
+	private PanelTabla panelTablita;
 	
-	public PanelTabla setPanelTabla(PanelTabla panelTabla) {
-		return this.panelTabla = panelTabla;
+
+	public PanelTabla setPanelTabla(PanelTabla panelTablita) {
+		return this.panelTablita = panelTablita;
 	}
+	
+	
 	
 	/**
 	 * Create the panel.
 	 */
 	public PanelProvincias() {
+				
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -57,7 +61,7 @@ public class PanelProvincias extends JPanel {
 		gbc_lblGestorDeProvincias.gridy = 1;
 		add(lblGestorDeProvincias, gbc_lblGestorDeProvincias);
 		
-		JLabel lblNewLabel = new JLabel("Code: ");
+		JLabel lblNewLabel = new JLabel("Code Provincia:  ");
 		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
@@ -67,6 +71,7 @@ public class PanelProvincias extends JPanel {
 		add(lblNewLabel, gbc_lblNewLabel);
 		
 		jtfCode = new JTextField();
+		jtfCode.setEnabled(false);
 		GridBagConstraints gbc_jtfCode = new GridBagConstraints();
 		gbc_jtfCode.insets = new Insets(0, 0, 5, 5);
 		gbc_jtfCode.fill = GridBagConstraints.HORIZONTAL;
@@ -75,7 +80,7 @@ public class PanelProvincias extends JPanel {
 		add(jtfCode, gbc_jtfCode);
 		jtfCode.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("Label: ");
+		JLabel lblNewLabel_1 = new JLabel("Nombre (Label): ");
 		lblNewLabel_1.setFont(new Font("Dialog", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
@@ -93,7 +98,7 @@ public class PanelProvincias extends JPanel {
 		add(jtfLabel, gbc_jtfLabel);
 		jtfLabel.setColumns(10);
 		
-		JLabel lblNewLabel_2 = new JLabel("CCAA: ");
+		JLabel lblNewLabel_2 = new JLabel("Com. Autónoma: ");
 		lblNewLabel_2.setFont(new Font("Dialog", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.anchor = GridBagConstraints.EAST;
@@ -145,7 +150,7 @@ public class PanelProvincias extends JPanel {
 
 		
 		
-		//cargaTodasCCAA();
+		cargaTodasCCAA();
 	}
 
 	
@@ -155,12 +160,11 @@ public class PanelProvincias extends JPanel {
 	/**
 	 * 
 	 */
-	private void mostrarPanelProvinciasEnJDialog () {
+	public void mostrarPanelProvinciasEnJDialog () {
 		JDialog dialogo = new JDialog();
 		dialogo.setResizable(true);
-		dialogo.setTitle("Gestión de usuario");
-		dialogo.setContentPane(new PanelCCAA(
-				(ComunidadAutonoma) this.jcbCcaa.getSelectedItem(), this.jcbCcaa));
+		dialogo.setTitle("Gestión de la CCAA");
+		dialogo.setContentPane(new PanelCCAA(this, panelTablita));
 		dialogo.pack();
 		dialogo.setModal(true);
 		dialogo.setLocation(
@@ -174,11 +178,12 @@ public class PanelProvincias extends JPanel {
 	public void muestraProvincia(Provincia ps) {
 		
 		if(ps != null)
+			
 			this.jtfLabel.setText("" + ps.getLabel());
 			this.jtfCode.setText(ps.getCode());
 		
 			for (int i = 0; i < this.jcbCcaa.getItemCount(); i++) {
-				if (((ComunidadAutonoma) this.jcbCcaa.getItemAt(i)).getCode()
+				if (((ComunidadAutonoma) this.jcbCcaa.getItemAt(i)).getCode() 
 						.equals(ps.getParentCode())) {
 					this.jcbCcaa.setSelectedIndex(i);
 				}
@@ -192,7 +197,10 @@ public class PanelProvincias extends JPanel {
 	/**
 	 * 
 	 */
-	private void cargaTodasCCAA() {
+	public void cargaTodasCCAA() {
+		
+		this.jcbCcaa.removeAllItems();
+		
 		List<ComunidadAutonoma> ccaas = (List<ComunidadAutonoma>) ControladorComunidadMongo
 				.getInstance().getAllCcaa();
 		for (ComunidadAutonoma ca : ccaas) {
@@ -203,42 +211,55 @@ public class PanelProvincias extends JPanel {
 	
 	
 	/**
-	 * 
+	 * Guardamos los datos del panelProvincia.
 	 */
 	public void guardar() {
-		Provincia p = new Provincia();
+		Provincia pr = new Provincia();
 		
 		// GUARDAMOS LOS DATOS QUE HAY EN EL PANEL PROVINCIA
 		// EN UN OBJETO PROVINCIA
 		
-		p.setCode(this.jtfCode.getText());
+		pr.setCode(this.jtfCode.getText());
 		
 		if (!this.jtfLabel.getText().isEmpty()) {
-			p.setLabel(this.jtfLabel.getText());
+			pr.setLabel(this.jtfLabel.getText());
 		}else {
 			JOptionPane.showMessageDialog(null,
 					"El nombre no puede estar vacío");;
 			return;
 		}
 		
-		p.setParentCode(((ComunidadAutonoma)this.jcbCcaa.getSelectedItem()).getCode());
-		
-		
-		
+		pr.setParentCode(((ComunidadAutonoma)this.jcbCcaa.getSelectedItem()).getCode());
 		
 		
 		// GUARDAMOS EL DOCUMENTO (U OBJETO) EN LA COLECCIÓN
 		ControladorProvinciasMongo.getInstance()
-			.updateProvincia(p);
+			.updateProvincia(pr);
 		
 		
-		// Actualizamos la tabla para mostrar los nuevos datos.
-		// A continuación, seleccionamos en la tabla dicho registro.
-		this.panelTabla.updateTable();
-		this.panelTabla.selectRowByCode(this.jtfCode.getText());
+		// Actualizo la tabla para mostrar los nuevos datos.
+		this.panelTablita.updateTable();  
+	
+		
 		
 		JOptionPane.showMessageDialog(null, 
 				"Se ha actualizado la provincia con éxito");
+	}
+	
+	
+	public void updateCCAAdelJCombo() {
+		ComunidadAutonoma ca = (ComunidadAutonoma) jcbCcaa.getSelectedItem();
+		
+		cargaTodasCCAA(); // Actualizamos el JComboBox
+		
+		// Buscamos la comunidad autónoma correspondiente en el nuevo JComboBox y la seleccionamos
+	    for (int i = 0; i < jcbCcaa.getItemCount(); i++) {
+	        if (((ComunidadAutonoma) jcbCcaa.getItemAt(i)).getCode().equals(ca.getCode())) {
+	            jcbCcaa.setSelectedIndex(i);
+	            break; // Una vez encontrada y seleccionada, salimos del bucle
+	        }
+	    }
+	    
 	}
 	
 	
@@ -246,10 +267,14 @@ public class PanelProvincias extends JPanel {
 	
 	
 	
+/// creo getters y setters del jtfCode para poder usarlo en el JDialog.
+	public JTextField getJtfCode() {
+		return jtfCode;
+	}
+
+	public void setJtfCode(JTextField jtfCode) {
+		this.jtfCode = jtfCode;
+	}
 	
-	
-	
-	
-	
-	
+
 }

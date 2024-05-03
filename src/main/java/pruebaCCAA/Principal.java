@@ -41,7 +41,7 @@ public class Principal extends JFrame {
 	 */
 	public Principal() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 469, 347);
+		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -50,19 +50,16 @@ public class Principal extends JFrame {
 		
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setDividerLocation(300); //para controlar la posición de la división de la pantalla
 		contentPane.add(splitPane, BorderLayout.CENTER);
 		
-		JPanel panelArriba = new JPanel();
+		
 		splitPane.setLeftComponent(this.panelTabla);
 		
-		JPanel panelAbajo = new JPanel();
+		
 		splitPane.setRightComponent(this.panelProvincia);
+		
+		panelProvincia.setPanelTabla(panelTabla);
 	}
-
-	
-	
-	
-	
-	
 	
 }
